@@ -4,19 +4,41 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.demo.comentoStatistic.dao.StatisticMapper">
-
-    <select id="selectYearLogin" parameterType="string" resultType="YearCountDto">
-        select concat('20', #{year}) as year, count(*) as totCnt
-        from statistic.request_info ri
-        where ri.create_date IS NOT NULL
-          AND left(ri.create_date, 2) = #{year}
+    <!-- 일자별 접속자 수 조회 -->
+    <select id="selectDailyUserCount" parameterType="string" resultType="com.demo.comentoStatistic.dto.DailyUserCountDto">
+        select #{date} as date, count(user_id) as userCount
+        from request_info
+        where create_date = #{date}
     </select>
 
+    <!-- 월별 접속자 수 조회 -->
+    <select id="selectMonthlyUserCount" parameterType="string" resultType="com.demo.comentoStatistic.dto.MonthlyUserCountDto">
+        select 
+            substring(#{yearMonth}, 1, 4) as year,
+            substring(#{yearMonth}, 5, 2) as month,
+            count(user_id) as userCount
+        from request_info
+        where substring(create_date, 1, 6) = #{yearMonth}
+    </select>
 
-    <select id="selectYearMonthLogin" parameterType="string" resultType="YearMonthCountDto">
-        select concat('20', #{yearMonth}) as yearMonth, count(*) as totCnt
-        from statistic.request_info ri
-        where left(ri.create_date, 4) = #{yearMonth}
+    <!-- 기간 내 총 접속수 조회 -->
+    <select id="selectTotalAccessCount" resultType="java.lang.Integer">
+        select count(user_id)
+        from request_info
+        where create_date between #{startDate} and #{endDate}
+    </select>
+
+    <!-- 부서별 월별 접속수 조회 -->
+    <select id="selectDeptMonthlyUserCount" resultType="com.demo.comentoStatistic.dto.DeptMonthlyUserCountDto">
+        select 
+            substring(#{yearMonth}, 1, 4) as year,
+            substring(#{yearMonth}, 5, 2) as month,
+            #{department} as department,
+            count(ri.user_id) as userCount
+        from request_info ri
+        join users u on ri.user_id = u.user_id
+        where substring(ri.create_date, 1, 6) = #{yearMonth}
+          and u.department = #{department}
     </select>
 
 </mapper>
