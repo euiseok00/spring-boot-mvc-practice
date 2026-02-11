@@ -25,8 +25,8 @@ public class StatisticController {
         }
         
         int yearNum = Integer.parseInt(year);
-        if (yearNum < 1950 || yearNum > 2026) {
-            return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (1950-2026)\"}");
+        if (yearNum < 2000 || yearNum > 2026) {
+            return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (2000-2026)\"}");
         }
         
         // 월 검증
@@ -60,8 +60,8 @@ public class StatisticController {
         }
         
         int yearNum = Integer.parseInt(year);
-        if (yearNum < 1950 || yearNum > 2026) {
-            return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (1950-2026)\"}");
+        if (yearNum < 2000 || yearNum > 2026) {
+            return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (2000-2026)\"}");
         }
         
         // 월 검증
@@ -113,8 +113,8 @@ public class StatisticController {
             int startYear = Integer.parseInt(startDate.substring(0, 4));
             int endYear = Integer.parseInt(endDate.substring(0, 4));
             
-            if (startYear < 1950 || startYear > 2026 || endYear < 1950 || endYear > 2026) {
-                return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (1950-2026)\"}");
+            if (startYear < 2000 || startYear > 2026 || endYear < 2000 || endYear > 2026) {
+                return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (2000-2026)\"}");
             }
             
             if (startDate.compareTo(endDate) > 0) {
@@ -146,8 +146,8 @@ public class StatisticController {
         }
         
         int yearNum = Integer.parseInt(year);
-        if (yearNum < 1950 || yearNum > 2026) {
-            return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (1950-2026)\"}");
+        if (yearNum < 2000 || yearNum > 2026) {
+            return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (2000-2026)\"}");
         }
         
         // 월 검증
@@ -176,6 +176,46 @@ public class StatisticController {
 
         try {
             DeptMonthlyUserCountDto result = statisticService.getDeptMonthlyUserCount(year, month, department);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("{\"error\": \"서버 오류가 발생했습니다: " + e.getMessage() + "\"}");
+        }
+    }
+
+    // 공휴일 제외 기간별 접속자 수 조회 엔드포인트
+    @RequestMapping(value="/stats/users/excluding-holidays/{start-date}/{end-date}", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<?> getHolidayExcludedUserCount(@PathVariable("start-date") String startDate, @PathVariable("end-date") String endDate){
+
+        // 시작일 검증 (8자리 숫자)
+        if (!startDate.matches("\\d{8}")) {
+            return ResponseEntity.badRequest().body("{\"error\": \"시작일은 8자리 숫자여야 합니다 (예: 20240101)\"}");
+        }
+
+        // 종료일 검증 (8자리 숫자)
+        if (!endDate.matches("\\d{8}")) {
+            return ResponseEntity.badRequest().body("{\"error\": \"종료일은 8자리 숫자여야 합니다 (예: 20240131)\"}");
+        }
+
+        // 날짜 유효성 검증
+        try {
+            int startYear = Integer.parseInt(startDate.substring(0, 4));
+            int endYear = Integer.parseInt(endDate.substring(0, 4));
+
+            if (startYear < 2000 || startYear > 2026 || endYear < 2000 || endYear > 2026) {
+                return ResponseEntity.badRequest().body("{\"error\": \"유효하지 않은 년도입니다 (2000-2026)\"}");
+            }
+
+            if (startDate.compareTo(endDate) > 0) {
+                return ResponseEntity.badRequest().body("{\"error\": \"시작일이 종료일보다 늦을 수 없습니다\"}");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"error\": \"날짜 형식이 올바르지 않습니다\"}");
+        }
+
+        try {
+            HolidayExcludedUserCountDto result = statisticService.getHolidayExcludedUserCount(startDate, endDate);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("{\"error\": \"서버 오류가 발생했습니다: " + e.getMessage() + "\"}");

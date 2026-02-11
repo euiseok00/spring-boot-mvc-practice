@@ -41,4 +41,24 @@
           and u.department = #{department}
     </select>
 
+    <!-- 공휴일 제외 기간별 접속수 조회 -->
+    <select id="selectTotalAccessCountExcludingDates" resultType="java.lang.Integer">
+        select count(user_id)
+        from request_info
+        where create_date between #{startDate} and #{endDate}
+        <if test="excludedDates != null and excludedDates.size() > 0">
+            and create_date not in
+            <foreach item="date" collection="excludedDates" open="(" separator="," close=")">
+                #{date}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 기간 내 공휴일 목록 조회 -->
+    <select id="selectHolidaysInPeriod" resultType="string">
+        select holiday_date
+        from holiday
+        where holiday_date between #{startDate} and #{endDate}
+    </select>
+
 </mapper>

@@ -1,0 +1,53 @@
+Comento Statistic API Endpoints Summary
+
+프로젝트: Comento Statistic (SW 활용 현황 통계 데이터 제공 API)
+기술 스택: Spring Boot 3.4.2, MyBatis, Java 17, Maven
+
+통계 조회 엔드포인트 (총 5가지):
+
+1. 월별 접속자 수 조회
+   - Endpoint: GET /stats/users/{year}/{month}
+   - 설명: 지정된 년월의 월별 접속자 수를 반환
+   - 파라미터:
+     - year: 4자리 숫자 (2000-2026)
+     - month: 1-2자리 숫자 (1-12)
+   - 반환: MonthlyUserCountDto
+
+2. 일자별 접속자 수 조회
+   - Endpoint: GET /stats/users/{year}/{month}/{day}
+   - 설명: 지정된 날짜의 일별 접속자 수를 반환
+   - 파라미터:
+     - year: 4자리 숫자 (2000-2026)
+     - month: 1-2자리 숫자 (1-12)
+     - day: 1-2자리 숫자 (1-31)
+   - 반환: DailyUserCountDto
+
+3. 평균 하루 접속수 조회
+   - Endpoint: GET /stats/users/avg-daily/{start-date}/{end-date}
+   - 설명: 지정된 기간의 평균 하루 접속자 수를 계산하여 반환
+   - 파라미터:
+     - start-date: 8자리 숫자 (YYYYMMDD 형식, 2000-2026년)
+     - end-date: 8자리 숫자 (YYYYMMDD 형식, 2000-2026년)
+   - 반환: AvgDailyUserCountDto
+
+4. 부서별 월별 접속수 조회
+   - Endpoint: GET /stats/users/dept-monthly/{year}/{month}/{department}
+   - 설명: 지정된 년월의 특정 부서별 월별 접속자 수를 반환
+   - 파라미터:
+     - year: 4자리 숫자 (2000-2026)
+     - month: 1-2자리 숫자 (1-12)
+     - department: 부서명 (dev, plan, law, marketing, design 중 하나)
+   - 반환: DeptMonthlyUserCountDto
+
+5. 공휴일 제외 기간별 접속자 수 조회
+   - Endpoint: GET /stats/users/excluding-holidays/{start-date}/{end-date}
+   - 설명: 지정된 기간에서 공휴일을 제외한 총 접속자 수를 반환
+   - 파라미터:
+     - start-date: 8자리 숫자 (YYYYMMDD 형식, 2000-2026년)
+     - end-date: 8자리 숫자 (YYYYMMDD 형식, 2000-2026년)
+   - 반환: HolidayExcludedUserCountDto
+
+공통 사항:
+- 모든 엔드포인트는 JSON 형식으로 응답
+- 입력 검증: 년도는 2000-2026 범위, 날짜 형식 준수
+- 에러 응답: 유효하지 않은 입력 시 400 Bad Request 반환

@@ -15,11 +15,11 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 30px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
@@ -35,18 +35,18 @@
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 10px;
             font-weight: 300;
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             opacity: 0.9;
         }
 
         .content {
-            padding: 40px 30px;
+            padding: 60px 50px;
         }
 
         .api-grid {
@@ -59,7 +59,7 @@
         .api-card {
             background: white;
             border-radius: 15px;
-            padding: 25px;
+            padding: 35px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             border: 1px solid #e1e8ed;
             transition: all 0.3s ease;
@@ -102,14 +102,22 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 20px;
             flex-shrink: 0;
         }
 
         .api-card .description {
             color: #666;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .api-card .parameters {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 1.1rem;
         }
 
         .api-card .endpoint {
@@ -117,14 +125,14 @@
             padding: 12px 15px;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+            font-size: 2rem;
             color: #333;
             margin-bottom: 15px;
             border-left: 4px solid #667eea;
         }
 
         .api-card .example {
-            font-size: 0.85rem;
+            font-size: 1rem;
             color: #888;
             margin-bottom: 15px;
         }
@@ -191,32 +199,6 @@
         }
 
         .search-result.show {
-            display: block;
-        }
-
-        .api-card a:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .section-title {
-            text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.8rem;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
 
             .api-card {
                 padding: 20px;
@@ -246,8 +228,9 @@
                         <span class="icon">1</span>
                         월별 접속자 수
                     </h3>
-                    <p class="description">특정 연도의 월별 접속자 수를 조회합니다. 중복 사용자는 제외하고 계산합니다.</p>
+                    <p class="description">지정된 년월의 월별 접속자 수를 반환</p>
                     <div class="endpoint">GET /stats/users/{year}/{month}</div>
+                    <p class="parameters"><br>year: 4자리 숫자 (2000-2026)<br>month: 1-2자리 숫자 (1-12)</p>
                     <p class="example">예시: /stats/users/2026/02 (2026년 2월)</p>
                     <a href="/stats/users/monthly/24">🔍월별 접속자 수 검색</a>
                 </div>
@@ -258,8 +241,9 @@
                         <span class="icon">2</span>
                         일자별 접속자 수
                     </h3>
-                    <p class="description">특정 일자의 접속자 수를 조회합니다.</p>
+                    <p class="description">지정된 날짜의 일별 접속자 수를 반환</p>
                     <div class="endpoint">GET /stats/users/{year}/{month}/{day}</div>
+                    <p class="parameters"><br>year: 4자리 숫자 (2000-2026)<br>month: 1-2자리 숫자 (1-12)<br>day: 1-2자리 숫자 (1-31)</p>
                     <p class="example">예시: /stats/users/2026/02/10 (2024년 2월 10일)</p>
                     <a href="/stats/users/daily/24/01">🔍 일자별 접속자 수 검색</a>
                 </div>
@@ -270,8 +254,9 @@
                         <span class="icon">3</span>
                         평균 하루 로그인 수
                     </h3>
-                    <p class="description">특정 기간의 평균 하루 로그인 수를 계산합니다.</p>
+                    <p class="description">지정된 기간의 평균 하루 접속자 수를 계산하여 반환</p>
                     <div class="endpoint">GET /stats/users/avg-daily/{start-date}/{end-date}</div>
+                    <p class="parameters"><br>start-date: 8자리 숫자 (YYYYMMDD 형식, 2000-2026년)<br>end-date: 8자리 숫자 (YYYYMMDD 형식, 2000-2026년)</p>
                     <p class="example">예시: /stats/users/avg-daily/20251209/20260116 (2025년 12월 9일 ~ 2026년 1월 16일)</p>
                     <a href="/stats/logins/avg-daily/24/01">🔍 평균 접속자 수 검색</a>
                 </div>
@@ -282,8 +267,9 @@
                         <span class="icon">4</span>
                         휴일을 제외한 로그인 수
                     </h3>
-                    <p class="description">휴일을 제외한 로그인 수를 조회합니다.</p>
+                    <p class="description">지정된 기간에서 공휴일을 제외한 총 접속자 수를 반환</p>
                     <div class="endpoint">GET /stats/users/excluding-holidays/{start-date}/{end-date}</div>
+                    <p class="parameters"><br>start-date: 8자리 숫자 (YYYYMMDD 형식, 2000-2026년)<br>end-date: 8자리 숫자 (YYYYMMDD 형식, 2000-2026년)</p>
                     <p class="example">예시: /stats/users/excluding-holidays/20251209/20260116 (2025년 12월 9일 ~ 2026년 1월 16일)</p>
                     <a href="/stats/logins/including-holidays/24/01">🔍 휴일 제외 접속자 수 검색</a>
                 </div>
@@ -294,8 +280,9 @@
                         <span class="icon">5</span>
                         부서별 월별 로그인 수
                     </h3>
-                    <p class="description">특정 연도의 부서별 월별 로그인 수를 조회합니다. 부서별 활동 비교 분석에 유용합니다.</p>
+                    <p class="description">지정된 년월의 특정 부서별 월별 접속자 수를 반환</p>
                     <div class="endpoint">GET /stats/users/dept-monthly/{year}/{month}/{department}</div>
+                    <p class="parameters"><br>year: 4자리 숫자 (2000-2026)<br>month: 1-2자리 숫자 (1-12)<br>department: 부서명 (dev, plan, law, marketing, design 중 하나)</p>
                     <p class="example">예시: /stats/users/dept-monthly/2026/02/dev (2025년 2월 개발팀)</p>
                     <a href="/stats/logins/dept-monthly/24">🔍 부서별 접속자 수 검색</a>
                 </div>

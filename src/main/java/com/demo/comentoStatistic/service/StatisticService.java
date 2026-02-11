@@ -8,12 +8,17 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StatisticService {
 
     @Autowired
     StatisticMapper statisticMapper;
+
+    @Autowired
+    HolidayService holidayService;
     
     // 일자별 접속자 수 조회
     public DailyUserCountDto getDailyUserCount(String year, String month, String day) {
@@ -63,5 +68,28 @@ public class StatisticService {
         // 날짜 포맷을 YYYYMM으로 변환
         String yearMonth = year + String.format("%02d", Integer.parseInt(month));
         return statisticMapper.selectDeptMonthlyUserCount(yearMonth, department);
+    }
+    
+    // 공휴일 제외 기간별 접속자 수 조회
+    public HolidayExcludedUserCountDto getHolidayExcludedUserCount(String startDate, String endDate) {
+        // 기간 내 공휴일 목록 가져오기
+        List<LocalDate> holidays = holidayService.getHolidaysInPeriod(startDate, endDate);
+        
+        // 공휴일 날짜를 YYYYMMDD 문자열 리스트로 변환
+        List<String> excludedDates = holidays.stream()
+                .map(date -> date.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                .collect(Collectors.toList());
+        
+        // 공휴일 제외 접속자 수 조회
+        Integer totalUserCount = statisticMapper.selectTotalAccessCountExcludingDates(startDate, endDate, excludedDates);
+        
+        // 결과 DTO 생성
+        HolidayExcludedUserCountDto result = new HolidayExcludedUserCountDto();
+        result.setStartDate(startDate);
+        result.setEndDate(endDate);
+        result.setExcludedHolidays(holidays.size());
+        result.setTotalUserCount(totalUserCount != null ? totalUserCount : 0);
+        
+        return result;
     }
 }
